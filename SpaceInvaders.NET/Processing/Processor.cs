@@ -10,9 +10,13 @@ namespace SpaceInvaders.Processing
     /// </summary>
     sealed public class Processor
     {
-        #region Instance variables
+        #region Properties
 
-        readonly private State state;
+        public Registers Registers { get; }
+        public Stack Stack { get; }
+        public Memory Memory { get; }
+        public Flags Flags { get; }
+        public ushort ProgramCounter { get; private set; }
 
         #endregion
 
@@ -23,7 +27,10 @@ namespace SpaceInvaders.Processing
         /// </summary>
         public Processor()
         {
-            state = new State();
+            this.Registers = new Registers();
+            this.Stack = new Stack();
+            this.Flags = new Flags();
+            this.Memory = new Memory();
         }
 
         #endregion
@@ -43,11 +50,27 @@ namespace SpaceInvaders.Processing
 
             while (instruction != null)
             {
-                instruction.Execute(this.state);
+                instruction.Execute(this);
 
-                if (!addressedInstructions.TryGetValue(this.state.ProgramCounter, out instruction))
-                    throw new AccessViolationException($"The instruction at address {this.state.ProgramCounter} was not found in the current instruction set.");
+                if (!addressedInstructions.TryGetValue(this.ProgramCounter, out instruction))
+                    throw new AccessViolationException($"The instruction at address {this.ProgramCounter} was not found in the current instruction set.");
             }
+        }
+
+        /// <summary>
+        /// Moves the position of the program counter to the given position
+        /// </summary>
+        public void MoveTo(ushort position)
+        {
+            this.ProgramCounter = position;
+        }
+
+        /// <summary>
+        /// Advance the position of the program counter of the given value
+        /// </summary>
+        public void Advance(ushort value = 1)
+        {
+            this.ProgramCounter += value;
         }
 
         #endregion

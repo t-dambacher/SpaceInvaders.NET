@@ -18,7 +18,7 @@ namespace SpaceInvaders.Assembly
         /// <summary>
         /// Separator for <see cref="ToString"/> operations
         /// </summary>
-        protected const string StringSeparator = "\t\t";
+        protected const string StringSeparator = "\t";
 
         #endregion
 
@@ -60,24 +60,25 @@ namespace SpaceInvaders.Assembly
         /// <summary>
         /// Executes the current instruction by updating the given processor's state
         /// </summary>
-        virtual public void Execute(State state)
+        virtual public void Execute(Processor processor)
         {
-            if (state == null)
-                throw new ArgumentNullException(nameof(state));
+            if (processor == null)
+                throw new ArgumentNullException(nameof(processor));
 
-            ExecuteInternal(state);
-            Advance(state);
+            Console.WriteLine(this);
+            ExecuteInternal(processor);
+            Advance(processor);
         }
 
         /// <summary>
         /// Internal execution of the current instruction
         /// </summary>
-        abstract protected void ExecuteInternal(State state);
+        abstract protected void ExecuteInternal(Processor processor);
 
         /// <summary>
         /// Advance the position of the program counter
         /// </summary>
-        virtual protected void Advance(State state)
+        virtual protected void Advance(Processor state)
         {
             state.Advance(Size);
         }
@@ -111,7 +112,28 @@ namespace SpaceInvaders.Assembly
                     return new LXIBD16Instruction(address, data[0], data[1]);
                 case OpCode.JMP:
                     return new JmpInstruction(address, data[0], data[1]);
-
+                case OpCode.LXISPD16:
+                    return new LXISPD16Instruction(address, data[0], data[1]);
+                case OpCode.MVIBD8:
+                    return new MVIBD8Instruction(address, data[0]);
+                case OpCode.CALL:
+                    return new CallInstruction(address, data[0], data[1]);
+                case OpCode.LXIDD16:
+                    return new LXIDD16Instruction(address, data[0], data[1]);
+                case OpCode.LXIHD16:
+                    return new LXIHD16Instruction(address, data[0], data[1]);
+                case OpCode.LDAXD:
+                    return new LDAXDInstruction(address);
+                case OpCode.MOVMA:
+                    return new MOVMAInstruction(address);
+                case OpCode.INXH:
+                    return new INXHInstruction(address);
+                case OpCode.INXD:
+                    return new INXDInstruction(address);
+                case OpCode.DCRB:
+                    return new DCRBInstruction(address);
+                case OpCode.JNZ:
+                    return new JNZInstruction(address, data[0], data[1]);
                 default:
                     return new NotImplementedInstruction(address, opCode);
             }

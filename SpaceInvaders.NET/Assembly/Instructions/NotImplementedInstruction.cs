@@ -9,7 +9,7 @@ namespace SpaceInvaders.Assembly
             : base(address, opCode)
         { }
 
-        override protected void ExecuteInternal(State state)
+        override protected void ExecuteInternal(Processor processor)
         {
             throw new NotImplementedException($"The current instruction ({OpCode} is not implemented.");   
         }

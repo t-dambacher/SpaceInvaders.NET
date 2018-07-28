@@ -12,6 +12,11 @@
         /// </summary>
         protected byte ExtraData2 { get; }
 
+        /// <summary>
+        /// The address corresponding to the extradata
+        /// </summary>
+        protected ushort ExtraDataAddress => BinaryHelper.ToAddress(ExtraData1, ExtraData2);
+
         #endregion
 
         #region Constructor
@@ -34,7 +39,7 @@
         /// </summary>
         override public string ToString()
         {
-            return base.ToString() + StringSeparator + ExtraData2;
+            return Address.ToString("X2") + StringSeparator + OpCode.ToString() + StringSeparator + ExtraDataAddress.ToString("X2");
         }
 
         #endregion
