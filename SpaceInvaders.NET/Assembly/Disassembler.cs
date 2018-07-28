@@ -8,7 +8,13 @@ namespace SpaceInvaders.Assembly
     /// </summary>
     sealed public class Disassembler
     {
+        #region Instance variables
+
         readonly private Stream rom;
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Creates a new <see cref="Disassembler"/> to disassemble the input rom file
@@ -17,6 +23,10 @@ namespace SpaceInvaders.Assembly
         {
             this.rom = rom ?? throw new ArgumentNullException(nameof(rom));
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Runs the disassembler
@@ -36,13 +46,12 @@ namespace SpaceInvaders.Assembly
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
                         byte value = reader.ReadByte();
-                        OpCode opCode = OpCodes.Parse(value);
+                        OpCode opCode = OpCode.FromHex(value);
 
                         if (opCode.Size > 1)
                             reader.ReadBytes(opCode.Size - 1);
 
                         Console.WriteLine(opCode);
-
                     }
                 }
             }
@@ -52,5 +61,7 @@ namespace SpaceInvaders.Assembly
                     rom.Position = initialPosition;
             }
         }
+
+        #endregion
     }
 }

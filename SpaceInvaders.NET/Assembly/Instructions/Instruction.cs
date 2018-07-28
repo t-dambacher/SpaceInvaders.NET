@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 
-namespace SpaceInvaders.Assembly
+namespace SpaceInvaders.Assembly.Instructions
 {
-    static public class OpCodes
+    public class Instruction
     {
-        static private IReadOnlyDictionary<byte, OpCode> codes = new[] {
-            new OpCode(0x00, "NOP", 1),
+        #region Properties
+
+        /// <summary>
+        /// The underlying OpCode
+        /// </summary>
+        public OpCode OpCode { get; }
+
+        #endregion
+
+
+
+        /*
+         *   new OpCode(0x00, "NOP", 1),
             new OpCode(0x01, "LXI B,D16", 3),
             new OpCode(0x02, "STAX B", 1),
             new OpCode(0x03, "INX B", 1),
@@ -263,12 +274,6 @@ namespace SpaceInvaders.Assembly
             new OpCode(0xfd, "-", 1),
             new OpCode(0xfe, "CPI D8", 2),
             new OpCode(0xff, "RST 7", 1)
-        }
-            .ToDictionary(op => op.Value);
-
-        static public OpCode Parse(byte value)
-        {
-            return codes.TryGetValue(value, out OpCode result) ? result : throw new ArgumentException($"The given opcode ({value}) is unknown.");
-        }
+            */
     }
 }

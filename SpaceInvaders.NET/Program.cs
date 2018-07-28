@@ -1,4 +1,5 @@
 ﻿using SpaceInvaders.Assembly;
+using SpaceInvaders.Processing;
 using System;
 using System.IO;
 
@@ -20,11 +21,7 @@ namespace SpaceInvaders
                 if (args?.Length != 1)
                     throw new ArgumentException("Usage: spaceinvaders <rom path>");
 
-                var fileInfo = new FileInfo(args[0]);
-                if (!fileInfo.Exists)
-                    throw new ArgumentException("The rom path is invalid.");
-
-                using (Stream rom = fileInfo.OpenRead())
+                using (Stream rom = RomReader.Read(args[0]))
                 {
                     var dissassembler = new Disassembler(rom);
                     dissassembler.Run();
