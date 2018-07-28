@@ -9,7 +9,6 @@
         public bool AC { get; set; }
         public byte PAD { get; set; }
 
-
         public Flags()
         {
             this.Z = true;

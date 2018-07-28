@@ -65,7 +65,6 @@ namespace SpaceInvaders.Assembly
             if (processor == null)
                 throw new ArgumentNullException(nameof(processor));
 
-            Console.WriteLine(this);
             ExecuteInternal(processor);
             Advance(processor);
         }
@@ -88,7 +87,7 @@ namespace SpaceInvaders.Assembly
         /// </summary>
         override public string ToString()
         {
-            return Address.ToString("X2") + StringSeparator + OpCode.ToString();
+            return Address.ToString("X4") + StringSeparator + ((ushort)OpCode).ToString("X4") + StringSeparator + OpCode.ToString();
         }
 
         #endregion
@@ -145,7 +144,7 @@ namespace SpaceInvaders.Assembly
         static public ushort GetExtraDataSize(OpCode opCode)
         {
             if (!Enum.IsDefined(typeof(OpCode), opCode))
-                throw new ArgumentException($"The {opCode.ToString("X2")} is unknown.", nameof(opCode));
+                throw new ArgumentException($"The {opCode.ToString("X4")} is unknown.", nameof(opCode));
 
             switch (opCode)
             {

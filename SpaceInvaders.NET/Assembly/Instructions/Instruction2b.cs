@@ -39,7 +39,7 @@
         /// </summary>
         override public string ToString()
         {
-            return Address.ToString("X2") + StringSeparator + OpCode.ToString() + StringSeparator + ExtraDataAddress.ToString("X2");
+            return Address.ToString("X4") + StringSeparator + ((ushort)OpCode).ToString("X4") + StringSeparator + OpCode.ToString() + " " + ExtraDataAddress.ToString("X4");
         }
 
         #endregion

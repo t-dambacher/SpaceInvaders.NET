@@ -1,9 +1,9 @@
 ﻿namespace SpaceInvaders.Assembly
 {
-    /// <summary>
-    /// Represents an 8080's OpCode
-    /// </summary>
-    public enum OpCode : ushort
+	/// <summary>
+	/// Represents an 8080's OpCode
+	/// </summary>
+	public enum OpCode : ushort
 	{
 		NOP = 0x00,
 		LXIBD16 = 0x01, 

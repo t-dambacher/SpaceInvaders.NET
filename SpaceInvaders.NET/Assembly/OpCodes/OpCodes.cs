@@ -15,7 +15,7 @@ namespace SpaceInvaders.Assembly
         {
             OpCode result = (OpCode)opCode;
             if (!Enum.IsDefined(typeof(OpCode), result))
-                throw new ArgumentException($"The {opCode.ToString("X2")} is unknown.", nameof(opCode));
+                throw new ArgumentException($"The {opCode.ToString("X4")} is unknown.", nameof(opCode));
 
             return result;
         }

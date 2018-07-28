@@ -1,4 +1,5 @@
 ﻿using SpaceInvaders.Assembly;
+using SpaceInvaders.Debugging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,13 @@ namespace SpaceInvaders.Processing
         public Memory Memory { get; }
         public Flags Flags { get; }
         public ushort ProgramCounter { get; private set; }
+        public int Cycle { get; private set; }
+
+        #endregion
+
+        #region Instance variables
+
+        readonly private DebugMode debugMode;
 
         #endregion
 
@@ -25,12 +33,13 @@ namespace SpaceInvaders.Processing
         /// <summary>
         /// Creates a new instance of a <see cref="Processor"/>
         /// </summary>
-        public Processor()
+        public Processor(DebugMode debugMode = DebugMode.None)
         {
             this.Registers = new Registers();
             this.Stack = new Stack();
             this.Flags = new Flags();
             this.Memory = new Memory();
+            this.debugMode = debugMode;
         }
 
         #endregion
@@ -50,7 +59,13 @@ namespace SpaceInvaders.Processing
 
             while (instruction != null)
             {
+                HandleStateDisplaying();
+
                 instruction.Execute(this);
+
+                Cycle += 4;
+
+                HandleDebugging(instruction);
 
                 if (!addressedInstructions.TryGetValue(this.ProgramCounter, out instruction))
                     throw new AccessViolationException($"The instruction at address {this.ProgramCounter} was not found in the current instruction set.");
@@ -71,6 +86,26 @@ namespace SpaceInvaders.Processing
         public void Advance(ushort value = 1)
         {
             this.ProgramCounter += value;
+        }
+
+        private void HandleDebugging(Instruction currentInstruction)
+        {
+            if (debugMode.HasFlag(DebugMode.EnableLogging))
+                Console.WriteLine(currentInstruction);
+
+            HandleStateDisplaying();
+
+            if (debugMode.HasFlag(DebugMode.StepByStep))
+            {
+                Console.ReadKey();
+                Console.SetCursorPosition(0, Console.CursorTop);
+            }
+        }
+
+        private void HandleStateDisplaying()
+        {
+            if(debugMode.HasFlag(DebugMode.DisplayState))
+                    StateDisplayer.Display(this);
         }
 
         #endregion
