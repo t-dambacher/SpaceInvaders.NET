@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SpaceInvaders.Assembly;
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SpaceInvaders.Assembly
@@ -29,9 +31,9 @@ namespace SpaceInvaders.Assembly
         #region Methods
 
         /// <summary>
-        /// Runs the disassembler
+        /// Runs the disassembler to get a list of instruction that could be executed
         /// </summary>
-        public void Run()
+        public IEnumerable<Instruction> Disassemble()
         {
             long initialPosition = rom.Position;
 
@@ -42,16 +44,26 @@ namespace SpaceInvaders.Assembly
             {
                 using (BinaryReader reader = new BinaryReader(this.rom))
                 {
+                    ushort currentAddress = 0;
+
                     // Checking for EOF
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
+                        // Parsing the OpCode and its extra data
                         byte value = reader.ReadByte();
-                        OpCode opCode = OpCode.FromHex(value);
+                        
+                        OpCode opCode = OpCodes.FromHex(value);
+                        ushort size = Instruction.GetExtraDataSize(opCode);
+                        byte[] data = new byte[0];
 
-                        if (opCode.Size > 1)
-                            reader.ReadBytes(opCode.Size - 1);
+                        if (size > 0)
+                        { 
+                            data = reader.ReadBytes(size);
+                        }
 
-                        Console.WriteLine(opCode);
+                        yield return Instruction.FromOpCode(currentAddress, opCode, data);
+                        currentAddress += (ushort)(1 + size);
+
                     }
                 }
             }

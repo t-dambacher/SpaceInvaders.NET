@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SpaceInvaders.Processing
+namespace SpaceInvaders.Parsing
 {
     /// <summary>
     /// Helper able to read the input ROM into RAM

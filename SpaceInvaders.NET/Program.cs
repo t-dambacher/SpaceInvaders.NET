@@ -1,6 +1,8 @@
 ﻿using SpaceInvaders.Assembly;
+using SpaceInvaders.Parsing;
 using SpaceInvaders.Processing;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SpaceInvaders
@@ -24,8 +26,10 @@ namespace SpaceInvaders
                 using (Stream rom = RomReader.Read(args[0]))
                 {
                     var dissassembler = new Disassembler(rom);
-                    dissassembler.Run();
-                    Console.ReadKey();
+                    var processor = new Processor();
+
+                    IEnumerable<Instruction> instructions = dissassembler.Disassemble();
+                    processor.Execute(instructions);
                 }
             }
             catch (Exception ex)
