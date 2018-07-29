@@ -31,11 +31,8 @@ namespace SpaceInvaders
 
                 using (Stream rom = RomReader.Read(args[0]))
                 {
-                    var dissassembler = new Disassembler(rom);
                     var processor = Processor.Create(debugMode);
-
-                    IEnumerable<Instruction> instructions = dissassembler.Disassemble();
-                    processor.Execute(instructions);
+                    processor.Execute(rom);
                 }
             }
             catch (Exception ex)

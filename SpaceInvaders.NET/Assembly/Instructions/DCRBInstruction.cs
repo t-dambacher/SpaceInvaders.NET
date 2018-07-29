@@ -13,7 +13,7 @@ namespace SpaceInvaders.Assembly
             byte res = (byte)(context.Registers.B - 1);
             context.Flags.Z = res == 0;
             context.Flags.S = (0x80 == (res & 0x80));
-            context.Flags.P = BinaryHelper.Parity(res, 8);
+            context.Flags.P = BinaryHelper.IsPair(res);
             context.Registers.B = res;
         }
     }

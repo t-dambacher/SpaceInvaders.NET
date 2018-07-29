@@ -42,9 +42,9 @@ namespace SpaceInvaders.Processing
         internal ExecutionContext()
         {
             this.Registers = new Registers();
-            this.Stack = new Stack();
             this.Flags = new Flags();
             this.Memory = new Memory();
+            this.Stack = new Stack(this.Memory);
         }
 
         #endregion

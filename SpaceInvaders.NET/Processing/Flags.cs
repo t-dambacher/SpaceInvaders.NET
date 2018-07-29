@@ -11,11 +11,11 @@
 
         public Flags()
         {
-            this.Z = true;
-            this.S = true;
-            this.P = true;
+            this.Z = false;
+            this.S = false;
+            this.P = false;
             this.CY = false;
-            this.AC = true;
+            this.AC = false;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using SpaceInvaders.Assembly;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -10,20 +9,13 @@ namespace SpaceInvaders.Assembly
     /// </summary>
     sealed public class Disassembler
     {
-        #region Instance variables
-
-        readonly private Stream rom;
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
-        /// Creates a new <see cref="Disassembler"/> to disassemble the input rom file
+        /// Creates a new <see cref="Disassembler"/> 
         /// </summary>
-        public Disassembler(Stream rom)
+        public Disassembler()
         {
-            this.rom = rom ?? throw new ArgumentNullException(nameof(rom));
         }
 
         #endregion
@@ -33,8 +25,11 @@ namespace SpaceInvaders.Assembly
         /// <summary>
         /// Runs the disassembler to get a list of instruction that could be executed
         /// </summary>
-        public IEnumerable<Instruction> Disassemble()
+        public IEnumerable<Instruction> Disassemble(Stream rom)
         {
+            if (rom == null)
+                throw new ArgumentNullException(nameof(rom));
+
             long initialPosition = rom.Position;
 
             if (rom.CanSeek)
@@ -42,7 +37,7 @@ namespace SpaceInvaders.Assembly
 
             try
             {
-                using (BinaryReader reader = new BinaryReader(this.rom))
+                using (BinaryReader reader = new BinaryReader(rom))
                 {
                     ushort currentAddress = 0;
 
@@ -50,20 +45,14 @@ namespace SpaceInvaders.Assembly
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
                         // Parsing the OpCode and its extra data
-                        byte value = reader.ReadByte();
-                        
-                        OpCode opCode = OpCodes.FromHex(value);
-                        ushort size = Instruction.GetExtraDataSize(opCode);
-                        byte[] data = new byte[0];
+                        (Instruction instruction, ushort size) = DisassembleInternal(
+                            reader.ReadByte(),
+                            count => reader.ReadBytes(count),
+                            currentAddress
+                        );
 
-                        if (size > 0)
-                        { 
-                            data = reader.ReadBytes(size);
-                        }
-
-                        yield return Instruction.FromOpCode(currentAddress, opCode, data);
+                        yield return instruction;
                         currentAddress += (ushort)(1 + size);
-
                     }
                 }
             }
@@ -72,6 +61,46 @@ namespace SpaceInvaders.Assembly
                 if (rom.CanSeek)
                     rom.Position = initialPosition;
             }
+        }
+
+        /// <summary>
+        /// Runs the disassembler on the given buffer to get the current instruction
+        /// </summary>
+        public Instruction Disassemble(byte[] buffer, ushort offset)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException(nameof(buffer));
+
+            byte[] bufferReader(ushort count)
+            {
+                // no checks are made here, it is not our responsability if the memory is invalid
+                byte[] result = new byte[count];
+                for (int i = 0; i < count; ++i)
+                    result[i] = buffer[offset + i + 1]; // the first byte has already been read, it is the OpCode (buffer[offset])
+                return result;
+            }
+
+            (Instruction instruction, ushort size) = DisassembleInternal(
+                buffer[offset],
+                bufferReader,
+                offset
+            );
+
+            return instruction;
+        }
+
+        private (Instruction, ushort) DisassembleInternal(byte value, Func<ushort, byte[]> reader, ushort address)
+        {
+            OpCode opCode = OpCodes.FromHex(value);
+            ushort size = Instruction.GetExtraDataSize(opCode);
+            byte[] data = new byte[0];
+
+            if (size > 0)
+            {
+                data = reader(size);
+            }
+
+            return (Instruction.FromOpCode(address, opCode, data), size);
         }
 
         #endregion

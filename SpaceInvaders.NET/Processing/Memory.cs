@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SpaceInvaders.Assembly;
 
@@ -22,8 +23,8 @@ namespace SpaceInvaders.Processing
         /// </summary>
         public byte this[ushort index]
         {
-            get => GetByteAt(index);
-            set { this.buffer[index] = value; }
+            get { return buffer[index]; }
+            set { buffer[index] = value; }
         }
 
         /// <summary>
@@ -35,20 +36,11 @@ namespace SpaceInvaders.Processing
 
         #region Instance variables
 
-        readonly private byte[] buffer;
-        private IReadOnlyDictionary<ushort, Instruction> addressedInstructions;
+        private byte[] buffer;
+        readonly private Disassembler disassembler;
 
         #endregion
-
-        #region Constants
-
-        /// <summary>
-        /// The starting address of the RAM in memory
-        /// </summary>
-        private const ushort RamOffset = 0x2000;
-
-        #endregion
-
+       
         #region Constructor
 
         /// <summary>
@@ -56,7 +48,7 @@ namespace SpaceInvaders.Processing
         /// </summary>
         internal Memory()
         {
-            this.buffer = new byte[8 * 1024];   // the game has 8k of RAM and starts at 0x2000
+            this.disassembler = new Disassembler();
         }
 
         #endregion
@@ -80,36 +72,36 @@ namespace SpaceInvaders.Processing
         }
 
         /// <summary>
-        /// Loads the given instructions set in memory
+        /// Loads the given ROM set in memory
         /// </summary>
-        public void Load(IEnumerable<Instruction> instructions)
+        public void Load(Stream rom)
         {
-            if (instructions == null)
-                throw new ArgumentNullException(nameof(instructions));
+            if (rom == null)
+                throw new ArgumentNullException(nameof(rom));
 
-            addressedInstructions = instructions.OrderBy(i => i.Address).ToDictionary(i => i.Address);
+            long initialPosition = rom.Position;
+
+            try
+            {
+                this.buffer = new byte[0xFFFF];
+                using (var stream = new MemoryStream(buffer))
+                {
+                    rom.CopyTo(stream);
+                }
+            }
+            finally
+            {
+                if (rom.CanSeek)
+                    rom.Position = initialPosition;
+            }
         }
 
         private Instruction GetCurrentInstruction()
         {
-            if (addressedInstructions == null)
+            if (buffer == null || buffer.Length == 0)
                 return null;
 
-            if (ProgramCounter == 0x00)
-                return addressedInstructions.Values.FirstOrDefault();
-
-            if (!addressedInstructions.TryGetValue(this.ProgramCounter, out Instruction instruction))
-                throw new AccessViolationException($"The instruction at address {this.ProgramCounter} was not found in the current instruction set.");
-
-            return instruction;
-        }
-
-        private byte GetByteAt(ushort address)
-        {
-            if (address < RamOffset)
-                return (byte)this.addressedInstructions[address].OpCode;    // todo: could not work if we ask for an other thing than the OpCode, like the operand values...
-
-            return buffer[address - RamOffset];
+            return disassembler.Disassemble(buffer, ProgramCounter);
         }
 
         #endregion

@@ -2,6 +2,7 @@
 using SpaceInvaders.Debugging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SpaceInvaders.Processing
 {
@@ -34,18 +35,21 @@ namespace SpaceInvaders.Processing
         #region Methods
 
         /// <summary>
-        /// Executes a set of instructions
+        /// Loads in memory the given ROM and starts executing it
         /// </summary>
-        public void Execute(IEnumerable<Instruction> instructions)
+        public void Execute(Stream rom)
         {
-            if (instructions == null)
-                throw new ArgumentNullException(nameof(instructions));
+            if (rom == null)
+                throw new ArgumentNullException(nameof(rom));
 
-            Context.Memory.Load(instructions);
+            Context.Memory.Load(rom);
 
-            while (Context.Memory.Current != null)
+            Instruction instruction = Context.Memory.Current;
+
+            while (instruction != null)
             {
-                Context.Execute(Context.Memory.Current);
+                Context.Execute(instruction);
+                instruction = Context.Memory.Current;
             }
         }
 

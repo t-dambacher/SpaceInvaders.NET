@@ -1,6 +1,4 @@
-﻿using NativeStack = System.Collections.Generic.Stack<byte>;
-
-namespace SpaceInvaders.Processing
+﻿namespace SpaceInvaders.Processing
 {
     /// <summary>
     /// The stack used by the 8080 processor
@@ -16,26 +14,33 @@ namespace SpaceInvaders.Processing
 
         #endregion
 
-        #region Instance variables
+        #region Instance variable
 
-        readonly private NativeStack stack;
+        readonly private Memory memory;
 
         #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Creates a new empty instance of a <see cref="Stack"/>
         /// </summary>
-        public Stack()
+        internal Stack(Memory memory)
         {
-            this.stack = new NativeStack();
+            this.memory = memory;
+            this.Pointer = 0xF000;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Pushes a byte on the stack
         /// </summary>
         public void Push(byte data)
         {
-            this.stack.Push(data);
+            this.memory[Pointer] = data;
             this.Pointer -= 1;
         }
 
@@ -46,5 +51,7 @@ namespace SpaceInvaders.Processing
         {
             this.Pointer = position;
         }
+
+        #endregion
     }
 }
