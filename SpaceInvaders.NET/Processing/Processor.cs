@@ -2,7 +2,6 @@
 using SpaceInvaders.Debugging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SpaceInvaders.Processing
 {
@@ -13,18 +12,10 @@ namespace SpaceInvaders.Processing
     {
         #region Properties
 
-        public Registers Registers { get; }
-        public Stack Stack { get; }
-        public Memory Memory { get; }
-        public Flags Flags { get; }
-        public ushort ProgramCounter { get; private set; }
-        public int Cycle { get; private set; }
-
-        #endregion
-
-        #region Instance variables
-
-        readonly private DebugMode debugMode;
+        /// <summary>
+        /// Execution context
+        /// </summary>
+        public IExecutionContext Context { get; }
 
         #endregion
 
@@ -33,13 +24,9 @@ namespace SpaceInvaders.Processing
         /// <summary>
         /// Creates a new instance of a <see cref="Processor"/>
         /// </summary>
-        public Processor(DebugMode debugMode = DebugMode.None)
+        private Processor(IExecutionContext context)
         {
-            this.Registers = new Registers();
-            this.Stack = new Stack();
-            this.Flags = new Flags();
-            this.Memory = new Memory();
-            this.debugMode = debugMode;
+            this.Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         #endregion
@@ -47,65 +34,36 @@ namespace SpaceInvaders.Processing
         #region Methods
 
         /// <summary>
-        /// Executes the given instruction set
+        /// Executes a set of instructions
         /// </summary>
         public void Execute(IEnumerable<Instruction> instructions)
         {
             if (instructions == null)
                 throw new ArgumentNullException(nameof(instructions));
-            
-            IReadOnlyDictionary<ushort, Instruction> addressedInstructions = instructions.OrderBy(i => i.Address).ToDictionary(i => i.Address);
-            Instruction instruction = addressedInstructions.Values.FirstOrDefault();
 
-            while (instruction != null)
+            Context.Memory.Load(instructions);
+
+            while (Context.Memory.Current != null)
             {
-                HandleStateDisplaying();
-
-                instruction.Execute(this);
-
-                Cycle += 4;
-
-                HandleDebugging(instruction);
-
-                if (!addressedInstructions.TryGetValue(this.ProgramCounter, out instruction))
-                    throw new AccessViolationException($"The instruction at address {this.ProgramCounter} was not found in the current instruction set.");
+                Context.Execute(Context.Memory.Current);
             }
         }
 
-        /// <summary>
-        /// Moves the position of the program counter to the given position
-        /// </summary>
-        public void MoveTo(ushort position)
-        {
-            this.ProgramCounter = position;
-        }
+        #endregion
+
+        #region Static methods
 
         /// <summary>
-        /// Advance the position of the program counter of the given value
+        /// Creates a new <see cref="IProcessor"/> with the given debugging capabilities.
         /// </summary>
-        public void Advance(ushort value = 1)
+        static public Processor Create(DebugMode mode)
         {
-            this.ProgramCounter += value;
-        }
+            IExecutionContext context = new ExecutionContext();
 
-        private void HandleDebugging(Instruction currentInstruction)
-        {
-            if (debugMode.HasFlag(DebugMode.EnableLogging))
-                Console.WriteLine(currentInstruction);
+            if (mode != DebugMode.None)
+                context = new DebuggingExecutionContext(context, mode);
 
-            HandleStateDisplaying();
-
-            if (debugMode.HasFlag(DebugMode.StepByStep))
-            {
-                Console.ReadKey();
-                Console.SetCursorPosition(0, Console.CursorTop);
-            }
-        }
-
-        private void HandleStateDisplaying()
-        {
-            if(debugMode.HasFlag(DebugMode.DisplayState))
-                    StateDisplayer.Display(this);
+            return new Processor(context);
         }
 
         #endregion

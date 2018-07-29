@@ -60,26 +60,26 @@ namespace SpaceInvaders.Assembly
         /// <summary>
         /// Executes the current instruction by updating the given processor's state
         /// </summary>
-        virtual public void Execute(Processor processor)
+        virtual public void Execute(IExecutionContext context)
         {
-            if (processor == null)
-                throw new ArgumentNullException(nameof(processor));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
-            ExecuteInternal(processor);
-            Advance(processor);
+            ExecuteInternal(context);
+            Advance(context);
         }
 
         /// <summary>
         /// Internal execution of the current instruction
         /// </summary>
-        abstract protected void ExecuteInternal(Processor processor);
+        abstract protected void ExecuteInternal(IExecutionContext context);
 
         /// <summary>
         /// Advance the position of the program counter
         /// </summary>
-        virtual protected void Advance(Processor state)
+        virtual protected void Advance(IExecutionContext context)
         {
-            state.Advance(Size);
+            context.Memory.Advance(Size);
         }
 
         /// <summary>

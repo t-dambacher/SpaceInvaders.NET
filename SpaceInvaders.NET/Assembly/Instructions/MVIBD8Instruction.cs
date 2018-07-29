@@ -8,9 +8,9 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.MVIBD8, extraData1)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            processor.Registers.B = ExtraData1;
+            context.Registers.B = ExtraData1;
         }
     }
 }

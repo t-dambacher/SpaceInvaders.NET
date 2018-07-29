@@ -8,10 +8,10 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.LXIHD16, extraData1, extraData2)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            processor.Registers.L = ExtraData1;
-            processor.Registers.H = ExtraData2;
+            context.Registers.L = ExtraData1;
+            context.Registers.H = ExtraData2;
         }
     }
 }

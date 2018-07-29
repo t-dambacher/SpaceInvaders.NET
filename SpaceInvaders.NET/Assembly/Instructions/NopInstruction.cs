@@ -8,7 +8,7 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.NOP)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
             // No-op
         }

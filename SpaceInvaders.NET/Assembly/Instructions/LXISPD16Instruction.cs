@@ -8,9 +8,9 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.LXISPD16, extraData1, extraData2)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            processor.Stack.MoveTo(ExtraDataAddress);
+            context.Stack.MoveTo(ExtraDataAddress);
         }
     }
 }

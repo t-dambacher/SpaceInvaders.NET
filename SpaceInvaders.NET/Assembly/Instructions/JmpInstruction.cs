@@ -8,12 +8,12 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.JMP, extraData1, extraData2)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            processor.MoveTo(ExtraDataAddress);
+            context.Memory.MoveTo(ExtraDataAddress);
         }
 
-        override protected void Advance(Processor processor)
+        override protected void Advance(IExecutionContext context)
         { }
     }
 }

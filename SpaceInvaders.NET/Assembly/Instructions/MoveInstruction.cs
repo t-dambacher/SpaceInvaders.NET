@@ -8,13 +8,13 @@ namespace SpaceInvaders.Assembly
             : base(address, opCode)
         { }
 
-        sealed override protected void ExecuteInternal(Processor processor)
+        sealed override protected void ExecuteInternal(IExecutionContext context)
         {
-            ushort offset = GetOffset(processor.Registers);
-            processor.Memory[offset] = GetStoredValue(processor);
+            ushort offset = GetOffset(context.Registers);
+            context.Memory[offset] = GetStoredValue(context);
         }
 
         abstract protected ushort GetOffset(Registers registers);
-        abstract protected byte GetStoredValue(Processor processor);
+        abstract protected byte GetStoredValue(IExecutionContext context);
     }
 }

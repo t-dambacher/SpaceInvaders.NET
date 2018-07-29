@@ -8,10 +8,10 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.LDAXD)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            ushort offset = BinaryHelper.ToAddress(processor.Registers.E, processor.Registers.D);
-            processor.Registers.A = processor.Memory[offset];
+            ushort offset = BinaryHelper.ToAddress(context.Registers.E, context.Registers.D);
+            context.Registers.A = context.Memory[offset];
         }
     }
 }

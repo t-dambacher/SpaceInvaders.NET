@@ -4,12 +4,18 @@ using System;
 
 namespace SpaceInvaders.Debugging
 {
+    /// <summary>
+    /// Helper to display debug informations on the screen
+    /// </summary>
     static internal class StateDisplayer
     {
-        static public void Display(Processor processor)
+        /// <summary>
+        /// Displays informations on the screen about the current execution context
+        /// </summary>
+        static public void Display(IExecutionContext context)
         {
-            if (processor == null)
-                throw new ArgumentNullException(nameof(processor));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
             int originalLeft = Console.CursorLeft;
             int originalTop = Console.CursorTop;
@@ -22,14 +28,14 @@ namespace SpaceInvaders.Debugging
 
                 Console.Write(" af   bc   de   hl   pc   sp  flags cycles");
 
-                string af = BinaryHelper.ToAddress(0x00, processor.Registers.A).ToString("X4");
-                string bc = BinaryHelper.ToAddress(processor.Registers.C, processor.Registers.B).ToString("X4");
-                string de = BinaryHelper.ToAddress(processor.Registers.E, processor.Registers.D).ToString("X4");
-                string hl = BinaryHelper.ToAddress(processor.Registers.L, processor.Registers.H).ToString("X4");
-                string pc = processor.ProgramCounter.ToString("X4");
-                string sp = processor.Stack.Pointer.ToString("X4");
-                string flags = GetFlags(processor.Flags);
-                string cycles = processor.Cycle.ToString();
+                string af = BinaryHelper.ToAddress(0x00, context.Registers.A).ToString("X4");
+                string bc = BinaryHelper.ToAddress(context.Registers.C, context.Registers.B).ToString("X4");
+                string de = BinaryHelper.ToAddress(context.Registers.E, context.Registers.D).ToString("X4");
+                string hl = BinaryHelper.ToAddress(context.Registers.L, context.Registers.H).ToString("X4");
+                string pc = context.Memory.ProgramCounter.ToString("X4");
+                string sp = context.Stack.Pointer.ToString("X4");
+                string flags = GetFlags(context.Flags);
+                string cycles = context.Cycles.ToString();
 
                 Console.CursorTop = Console.WindowTop + 1;
                 Console.CursorLeft = Console.WindowWidth - 44;

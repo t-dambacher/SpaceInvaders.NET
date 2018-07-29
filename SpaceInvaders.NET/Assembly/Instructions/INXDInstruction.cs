@@ -8,11 +8,11 @@ namespace SpaceInvaders.Assembly
            : base(address, OpCode.INXD)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            processor.Registers.E++;
-            if (processor.Registers.E == 0)
-                processor.Registers.D++;
+            context.Registers.E++;
+            if (context.Registers.E == 0)
+                context.Registers.D++;
         }
     }
 }

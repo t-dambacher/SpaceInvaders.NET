@@ -8,15 +8,15 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.JNZ, extraData1, extraData2)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            if (!processor.Flags.Z)
-                processor.MoveTo(ExtraDataAddress);
+            if (!context.Flags.Z)
+                context.Memory.MoveTo(ExtraDataAddress);
             else
-                processor.Advance(2);
+                context.Memory.Advance(2);
         }
 
-        override protected void Advance(Processor processor)
+        override protected void Advance(IExecutionContext context)
         { }
     }
 }

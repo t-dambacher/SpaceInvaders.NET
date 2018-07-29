@@ -8,17 +8,17 @@ namespace SpaceInvaders.Assembly
             : base(address, OpCode.CALL, extraData1, extraData2)
         { }
 
-        override protected void ExecuteInternal(Processor processor)
+        override protected void ExecuteInternal(IExecutionContext context)
         {
-            short ret = (short)(processor.ProgramCounter + 2);
+            short ret = (short)(context.Memory.ProgramCounter + 2);
 
-            processor.Stack.Push((byte)((ret >> 8) & 0xFF));
-            processor.Stack.Push((byte)(ret & 0xff));
+            context.Stack.Push((byte)((ret >> 8) & 0xFF));
+            context.Stack.Push((byte)(ret & 0xff));
 
-            processor.MoveTo(ExtraDataAddress);
+            context.Memory.MoveTo(ExtraDataAddress);
         }
 
-        override protected void Advance(Processor processor)
+        override protected void Advance(IExecutionContext context)
         { }
     }
 }

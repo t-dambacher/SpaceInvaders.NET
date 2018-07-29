@@ -11,6 +11,6 @@ namespace SpaceInvaders.Assembly
 
         override protected ushort GetOffset(Registers registers) => ToAddress(registers.L, registers.H);
 
-        override protected byte GetStoredValue(Processor processor) => processor.Registers.A;
+        override protected byte GetStoredValue(IExecutionContext context) => context.Registers.A;
     }
 }
