@@ -1,8 +1,8 @@
 ﻿using SpaceInvaders.Assembly;
 using SpaceInvaders.Debugging;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace SpaceInvaders.Processing
 {
@@ -18,6 +18,11 @@ namespace SpaceInvaders.Processing
         /// </summary>
         public IExecutionContext Context { get; }
 
+        /// <summary>
+        /// The screen
+        /// </summary>
+        public Screen Screen { get; }
+
         #endregion
 
         #region Constructor
@@ -28,6 +33,7 @@ namespace SpaceInvaders.Processing
         private Processor(IExecutionContext context)
         {
             this.Context = context ?? throw new ArgumentNullException(nameof(context));
+            this.Screen = new Screen(Context.Memory);
         }
 
         #endregion
