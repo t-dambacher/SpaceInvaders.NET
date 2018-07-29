@@ -8,7 +8,7 @@
         /// <summary>
         /// Converts two bytes to a short, for addressing purposes
         /// </summary>
-        static public ushort ToAddress(byte extraData1, byte extraData2)
+        static public ushort Combine(byte extraData1, byte extraData2)
         {
             return (ushort)((extraData2 << 8) | extraData1);
         }

@@ -30,9 +30,9 @@ namespace SpaceInvaders.Processing
         public Flags Flags { get; }
 
         /// <summary>
-        /// <see cref="IExecutionContext.Cycles"/>
+        /// <see cref="IExecutionContext.InstructionsCount"/>
         /// </summary>
-        public int Cycles { get; private set; }
+        public int InstructionsCount { get; private set; }
 
         #region Constructor
 
@@ -61,7 +61,7 @@ namespace SpaceInvaders.Processing
 
             instruction.Execute(this);
 
-            Cycles += 4;
+            InstructionsCount++;
         }
 
         #endregion

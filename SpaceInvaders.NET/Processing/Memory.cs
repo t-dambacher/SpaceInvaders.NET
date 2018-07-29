@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SpaceInvaders.Assembly;
+using System;
 using System.IO;
-using System.Linq;
-using SpaceInvaders.Assembly;
 
 namespace SpaceInvaders.Processing
 {
@@ -19,6 +17,11 @@ namespace SpaceInvaders.Processing
         public ushort ProgramCounter { get; private set;}
 
         /// <summary>
+        /// Returns the byte at the current position
+        /// </summary>
+        public byte Current => GetRelative(0);
+
+        /// <summary>
         /// Byte in memory
         /// </summary>
         public byte this[ushort index]
@@ -30,13 +33,13 @@ namespace SpaceInvaders.Processing
         /// <summary>
         /// Current instruction executing
         /// </summary>
-        public Instruction Current => GetCurrentInstruction();
+        public Instruction CurrentInstruction => GetCurrentInstruction();
 
         #endregion
 
         #region Instance variables
 
-        private byte[] buffer;
+        readonly private byte[] buffer;
         readonly private Disassembler disassembler;
 
         #endregion
@@ -48,6 +51,7 @@ namespace SpaceInvaders.Processing
         /// </summary>
         internal Memory()
         {
+            this.buffer = new byte[0xFFFF];
             this.disassembler = new Disassembler();
         }
 
@@ -83,10 +87,12 @@ namespace SpaceInvaders.Processing
 
             try
             {
-                this.buffer = new byte[0xFFFF];
-                using (var stream = new MemoryStream(buffer))
+                using (var stream = new MemoryStream((int)(rom.Length % int.MaxValue)))
                 {
                     rom.CopyTo(stream);
+                    byte[] romData = stream.ToArray();
+                    for (int i = 0; i < romData.Length; ++i)
+                        buffer[i] = romData[i];
                 }
             }
             finally
@@ -94,6 +100,14 @@ namespace SpaceInvaders.Processing
                 if (rom.CanSeek)
                     rom.Position = initialPosition;
             }
+        }
+
+        /// <summary>
+        /// Returns the byte at the shift position, relative to the current one
+        /// </summary>
+        public byte GetRelative(int shift)
+        {
+            return this[(ushort)(ProgramCounter + shift)];
         }
 
         private Instruction GetCurrentInstruction()

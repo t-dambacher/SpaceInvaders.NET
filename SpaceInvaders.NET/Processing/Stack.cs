@@ -40,8 +40,18 @@
         /// </summary>
         public void Push(byte data)
         {
+            this.Pointer--;
             this.memory[Pointer] = data;
-            this.Pointer -= 1;
+        }
+
+        /// <summary>
+        /// Pops the tops of the stack
+        /// </summary>
+        public byte Pop()
+        {
+            byte result = this.memory[Pointer];
+            this.Pointer++;
+            return result;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ namespace SpaceInvaders.Assembly
 
         override protected void ExecuteInternal(IExecutionContext context)
         {
-            ushort offset = BinaryHelper.ToAddress(context.Registers.E, context.Registers.D);
+            ushort offset = BinaryHelper.Combine(context.Registers.E, context.Registers.D);
             context.Registers.A = context.Memory[offset];
         }
     }

@@ -28,9 +28,9 @@ namespace SpaceInvaders.Processing
         Flags Flags { get; }
 
         /// <summary>
-        /// The current number of cycles that has been executed
+        /// The current number of instructions that has been executed
         /// </summary>
-        int Cycles { get; }
+        int InstructionsCount { get; }
 
         /// <summary>
         /// Executes the given instruction

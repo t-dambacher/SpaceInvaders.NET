@@ -2,19 +2,19 @@
 {
     public class Flags
     {
-        public bool Z { get; set; }
-        public bool S { get; set; }
-        public bool P { get; set; }
-        public bool CY { get; set; }
+        public bool Zero { get; set; }
+        public bool Sign { get; set; }
+        public bool Parity { get; set; }
+        public bool Carry { get; set; }
         public bool AC { get; set; }
         public byte PAD { get; set; }
 
         public Flags()
         {
-            this.Z = false;
-            this.S = false;
-            this.P = false;
-            this.CY = false;
+            this.Zero = false;
+            this.Sign = false;
+            this.Parity = false;
+            this.Carry = false;
             this.AC = false;
         }
     }

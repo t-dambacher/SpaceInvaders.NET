@@ -15,7 +15,7 @@
         /// <summary>
         /// The address corresponding to the extradata
         /// </summary>
-        protected ushort ExtraDataAddress => BinaryHelper.ToAddress(ExtraData1, ExtraData2);
+        protected ushort ExtraDataAddress => BinaryHelper.Combine(ExtraData1, ExtraData2);
 
         #endregion
 

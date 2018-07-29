@@ -10,10 +10,10 @@ namespace SpaceInvaders.Assembly
 
         override protected void ExecuteInternal(IExecutionContext context)
         {
-            if (!context.Flags.Z)
+            if (!context.Flags.Zero)
                 context.Memory.MoveTo(ExtraDataAddress);
             else
-                context.Memory.Advance(2);
+                context.Memory.Advance(3);
         }
 
         override protected void Advance(IExecutionContext context)

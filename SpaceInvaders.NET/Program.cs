@@ -1,9 +1,6 @@
-﻿using SpaceInvaders.Assembly;
-using SpaceInvaders.Debugging;
-using SpaceInvaders.Parsing;
+﻿using SpaceInvaders.Parsing;
 using SpaceInvaders.Processing;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace SpaceInvaders
@@ -24,14 +21,10 @@ namespace SpaceInvaders
                 if (args?.Length != 1)
                     throw new ArgumentException("Usage: spaceinvaders <rom path>");
 
-                DebugMode debugMode = DebugMode.None;
-#if DEBUG
-                debugMode = DebugMode.All;
-#endif
-
                 using (Stream rom = RomReader.Read(args[0]))
                 {
-                    var processor = Processor.Create(debugMode);
+                    Processor processor = Processor.Create();
+                    Debugging.Debugger.Instance.StepOver(1546);
                     processor.Execute(rom);
                 }
             }

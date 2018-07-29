@@ -10,7 +10,7 @@ namespace SpaceInvaders.Assembly
 
         override protected void ExecuteInternal(IExecutionContext context)
         {
-            short ret = (short)(context.Memory.ProgramCounter + 2);
+            short ret = (short)(context.Memory.ProgramCounter + 3);
 
             context.Stack.Push((byte)((ret >> 8) & 0xFF));
             context.Stack.Push((byte)(ret & 0xff));

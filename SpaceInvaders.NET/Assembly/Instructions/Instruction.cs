@@ -1,4 +1,5 @@
-﻿using SpaceInvaders.Processing;
+﻿using SpaceInvaders.Debugging;
+using SpaceInvaders.Processing;
 using System;
 
 namespace SpaceInvaders.Assembly
@@ -38,6 +39,11 @@ namespace SpaceInvaders.Assembly
         /// The size of the current instruction, in bytes
         /// </summary>
         public ushort Size { get; }
+
+        /// <summary>
+        /// Debugger instance
+        /// </summary>
+        protected Debugger Debugger => Debugger.Instance;
 
         #endregion
 
@@ -133,6 +139,8 @@ namespace SpaceInvaders.Assembly
                     return new DCRBInstruction(address);
                 case OpCode.JNZ:
                     return new JNZInstruction(address, data[0], data[1]);
+                case OpCode.RET:
+                    return new RETInstruction(address);
                 default:
                     return new NotImplementedInstruction(address, opCode);
             }

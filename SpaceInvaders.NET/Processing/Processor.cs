@@ -44,12 +44,12 @@ namespace SpaceInvaders.Processing
 
             Context.Memory.Load(rom);
 
-            Instruction instruction = Context.Memory.Current;
+            Instruction instruction = Context.Memory.CurrentInstruction;
 
             while (instruction != null)
             {
                 Context.Execute(instruction);
-                instruction = Context.Memory.Current;
+                instruction = Context.Memory.CurrentInstruction;
             }
         }
 
@@ -60,13 +60,12 @@ namespace SpaceInvaders.Processing
         /// <summary>
         /// Creates a new <see cref="IProcessor"/> with the given debugging capabilities.
         /// </summary>
-        static public Processor Create(DebugMode mode)
+        static public Processor Create()
         {
             IExecutionContext context = new ExecutionContext();
-
-            if (mode != DebugMode.None)
-                context = new DebuggingExecutionContext(context, mode);
-
+#if DEBUG
+            context = new DebuggingExecutionContext(context);
+#endif
             return new Processor(context);
         }
 

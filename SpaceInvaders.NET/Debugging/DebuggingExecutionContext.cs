@@ -12,9 +12,9 @@ namespace SpaceInvaders.Debugging
         #region Properties
 
         /// <summary>
-        /// <see cref="IExecutionContext.Cycles"/>
+        /// <see cref="IExecutionContext.InstructionsCount"/>
         /// </summary>
-        public int Cycles => decorated.Cycles;
+        public int InstructionsCount => decorated.InstructionsCount;
 
         /// <summary>
         /// <see cref="IExecutionContext.Flags"/>
@@ -41,7 +41,7 @@ namespace SpaceInvaders.Debugging
         #region Instance variables
 
         readonly private IExecutionContext decorated;
-        readonly private DebugMode mode;
+        readonly private Debugger debugger;
 
         #endregion
 
@@ -50,10 +50,10 @@ namespace SpaceInvaders.Debugging
         /// <summary>
         /// Creates a new instance of a <see cref="DebuggingExecutionContext"/>
         /// </summary>
-        public DebuggingExecutionContext(IExecutionContext decorated, DebugMode mode)
+        public DebuggingExecutionContext(IExecutionContext decorated)
         {
             this.decorated = decorated ?? throw new ArgumentNullException(nameof(decorated));
-            this.mode = mode;
+            this.debugger = Debugger.Instance;
         }
 
         #endregion
@@ -68,19 +68,19 @@ namespace SpaceInvaders.Debugging
             HandleStateDisplaying();
 
             this.decorated.Execute(instruction);
+            this.debugger.NotifyInstructionExecuted();
 
             HandleDebugging(instruction);
         }
 
-
         private void HandleDebugging(Instruction currentInstruction)
         {
-            if (this.mode.HasFlag(DebugMode.EnableLogging))
+            if (debugger.Mode.HasFlag(DebugMode.EnableLogging))
                 Console.WriteLine(currentInstruction);
 
             HandleStateDisplaying();
 
-            if (this.mode.HasFlag(DebugMode.StepByStep))
+            if (debugger.Mode.HasFlag(DebugMode.StepByStep))
             {
                 Console.ReadKey();
                 Console.SetCursorPosition(0, Console.CursorTop);
@@ -89,7 +89,7 @@ namespace SpaceInvaders.Debugging
 
         private void HandleStateDisplaying()
         {
-            if (this.mode.HasFlag(DebugMode.DisplayState))
+            if (debugger.Mode.HasFlag(DebugMode.DisplayState))
                 StateDisplayer.Display(this.decorated);
         }
 
