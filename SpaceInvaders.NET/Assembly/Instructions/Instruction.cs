@@ -19,7 +19,7 @@ namespace SpaceInvaders.Assembly
         /// <summary>
         /// Separator for <see cref="ToString"/> operations
         /// </summary>
-        protected const string StringSeparator = "\t";
+        protected const string StringSeparator = " ";
 
         #endregion
 

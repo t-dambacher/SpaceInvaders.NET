@@ -76,7 +76,7 @@ namespace SpaceInvaders.Debugging
         private void HandleDebugging(Instruction currentInstruction)
         {
             if (debugger.Mode.HasFlag(DebugMode.EnableLogging))
-                Console.WriteLine(currentInstruction);
+                StateDisplayer.Display(currentInstruction);
 
             HandleStateDisplaying();
 

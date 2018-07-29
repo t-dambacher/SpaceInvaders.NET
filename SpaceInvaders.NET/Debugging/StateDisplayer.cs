@@ -10,6 +10,32 @@ namespace SpaceInvaders.Debugging
     static internal class StateDisplayer
     {
         /// <summary>
+        /// Displays informations on the screen about the currently executed instruction
+        /// </summary>
+        static public void Display(Instruction instruction)
+        {
+            if (instruction == null)
+                throw new ArgumentNullException(nameof(instruction));
+
+            int originalLeft = Console.CursorLeft;
+            int originalTop = Console.CursorTop;
+
+            try
+            {
+                Console.CursorTop = Console.WindowTop + 3;
+                Console.CursorLeft = Console.WindowWidth - 44; // 44 is the max length of the debug string. it is large enough so that we never have to get to this limit.
+
+                Console.Write(instruction.ToString().PadRight(40, ' '));
+            }
+            finally
+            {
+                Console.CursorLeft = originalLeft;
+                Console.CursorTop = originalTop;
+            }
+        }
+
+
+        /// <summary>
         /// Displays informations on the screen about the current execution context
         /// </summary>
         static public void Display(IExecutionContext context)

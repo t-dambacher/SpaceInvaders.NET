@@ -22,6 +22,8 @@ namespace SpaceInvaders
                 if (args?.Length != 1)
                     throw new ArgumentException("Usage: spaceinvaders <rom path>");
 
+                Console.CursorVisible = false;
+
                 using (Stream rom = RomReader.Read(args[0]))
                 {
                     Processor processor = Processor.Create();
