@@ -1,4 +1,5 @@
-﻿using SpaceInvaders.Parsing;
+﻿using SpaceInvaders.Debugging;
+using SpaceInvaders.Parsing;
 using SpaceInvaders.Processing;
 using System;
 using System.IO;
@@ -24,7 +25,7 @@ namespace SpaceInvaders
                 using (Stream rom = RomReader.Read(args[0]))
                 {
                     Processor processor = Processor.Create();
-                    Debugging.Debugger.Instance.StepOver(1546);
+                    Debugger.Instance.Mode = DebugMode.DisplayState | DebugMode.EnableLogging;
                     processor.Execute(rom);
                 }
             }

@@ -6,9 +6,7 @@ namespace SpaceInvaders.Assembly
     {
         internal RETInstruction(ushort address)
             : base(address, OpCode.RET)
-        {
-            Debugger.Pause();
-        }
+        { }
 
         override protected void ExecuteInternal(IExecutionContext context)
         {

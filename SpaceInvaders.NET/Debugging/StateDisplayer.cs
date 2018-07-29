@@ -55,7 +55,7 @@ namespace SpaceInvaders.Debugging
                     flags.Zero ? 'Z' : '.',
                     flags.Sign ? 'S' : '.',
                     flags.Parity ? 'P' : '.',
-                    flags.Carry ? 'I' : '.',
+                    flags.Carry ? 'C' : '.',
                     flags.AC ? 'A' : '.'
                 }
             );
